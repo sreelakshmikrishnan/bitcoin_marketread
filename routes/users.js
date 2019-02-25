@@ -8,24 +8,5 @@ router.get('/', function(req, res, next) {
 });
 */
 
-
-var options = {
-  method: 'GET',
-  uri: 'https://bittrex.com/api/v1.1/public/getmarketsummaries',
-  json: true
-};
-
-rp(options)
-  .then(function (response) {
-    console.log(response);
-    response.result.forEach((item) => {
-      console.log(item.MarketName);
-    });
-  })
-  .catch(function (err) {
-    console.log(err);
-  });
-
-
 module.exports = router;
 
