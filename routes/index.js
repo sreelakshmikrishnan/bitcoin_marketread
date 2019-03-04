@@ -1,9 +1,7 @@
-var express = require('express');
-var router = express.Router();
-var rp = require('request-promise');
-var url = require('url');
-var querystring = require('querystring');
-var moment = require('moment');
+const express = require('express');
+const router = express.Router();
+const rp = require('request-promise');
+const moment = require('moment');
 
 var Bitcoin = require('../models/bitcoin_model');
 
