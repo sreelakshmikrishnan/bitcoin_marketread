@@ -50,18 +50,18 @@ router.get('/', (req, res, next) => {
 })
 
 router.get('/:marketname', (req, res, next) => {
-  var market_name = req.params.marketname;
+  var marketName = req.params.marketname;
   if (req.query.from && req.query.to) {
     var fromdate = moment(req.query.from, "YYYY-MM-DD");
     var todate = moment(req.query.to, "YYYY-MM-DD");
-    var queryString = { marketname: market_name, timestamp: { "$gte": fromdate.toDate(), "$lt": todate.toDate() } }
+    var queryString = { marketname: marketName, timestamp: { "$gte": fromdate.toDate(), "$lt": todate.toDate() } }
   }
   else if (req.query.from) {
     var date = moment(req.query.from, "YYYY-MM-DD");
-    var queryString = { marketname: market_name, timestamp: { "$gte": date.toDate() } }
+    var queryString = { marketname: marketName, timestamp: { "$gte": date.toDate() } }
   }
   else {
-    var queryString = { marketname: market_name }
+    var queryString = { marketname: marketName }
   }
   Bitcoin.find(queryString).exec()
     .then((result) => {
