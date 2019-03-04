@@ -53,41 +53,24 @@ router.get('/:marketname', (req, res, next) => {
   var market_name = req.params.marketname;
   if (req.query.from && req.query.to) {
     var fromdate = moment(req.query.from, "YYYY-MM-DD");
-    console.log(fromdate);
     var todate = moment(req.query.to, "YYYY-MM-DD");
-    Bitcoin.find({ marketname: market_name, timestamp: { "$gte": fromdate.toDate(), "$lt": todate.toDate() } }).exec()
-      .then((result) => {
-        console.log(result.length);
-        if (result.length) {
-          res.send(result);
-        }
-        else { res.status(404).json({ message: 'No valid entry found' }); }
-      })
-      .catch((err) => res.send(err));
+    var queryString = { marketname: market_name, timestamp: { "$gte": fromdate.toDate(), "$lt": todate.toDate() } }
   }
   else if (req.query.from) {
-    //console.log(req.query.from);
     var date = moment(req.query.from, "YYYY-MM-DD");
-    console.log(date);
-    Bitcoin.find({ marketname: market_name, timestamp: { "$gte": date.toDate() } }).exec()
-      .then((result) => {
-        if (result.length) {
-          res.send(result);
-        }
-        else { res.status(404).json({ message: 'No valid entry found' }); }
-      })
-      .catch((err) => res.send(err));
+    var queryString = { marketname: market_name, timestamp: { "$gte": date.toDate() } }
   }
   else {
-    Bitcoin.find({ marketname: market_name }).exec()
-      .then((result) => {
-        if (result.length) {
-          res.send(result);
-        }
-        else { res.status(404).json({ message: 'No valid entry found' }); }
-      })
-      .catch((err) => res.send(err));
+    var queryString = { marketname: market_name }
   }
+  Bitcoin.find(queryString).exec()
+    .then((result) => {
+      if (result.length) {
+        res.send(result);
+      }
+      else { res.status(404).json({ message: 'No valid entry found' }); }
+    })
+    .catch((err) => res.send(err));
 })
 
 module.exports = router;
