@@ -4,7 +4,7 @@ const rp = require('request-promise');
 const moment = require('moment');
 
 var Bitcoin = require('../models/bitcoin_model');
-
+var bitcoinArray = [];
 
 var options = {
   method: 'GET',
@@ -12,30 +12,32 @@ var options = {
   json: true
 };
 
-
 setInterval(function () {
   rp(options)
     .then(function (response) {
       response.result.forEach((item) => {
-        var bitcoin = new Bitcoin({
+        bitcoinArray.push({
           timestamp: item.TimeStamp,
           marketname: item.MarketName,
           high: item.High,
           low: item.Low,
           volume: item.BaseVolume
         })
-        //console.log(bitcoin)
-        bitcoin.save()
-          .then(result => {
-            console.log(result);
-            //res.send(result);
-          })
-        // .catch(err => next(err));
       })
+
+      bitcoinArray.forEach((item) => console.log(item));
+      Bitcoin.collection.insert(bitcoinArray, function (err, result) {
+        if (err) {
+          console.error(err);
+        } else {
+          console.log("Multiple documents inserted to Collection");
+        }
+      });
+     
     })
-    .catch(function (err) {
-      console.log(err);
-    });
+  .catch((err) => {
+    console.log(err);
+  });
 }, 60000);
 
 router.get('/', (req, res, next) => {
@@ -48,6 +50,7 @@ router.get('/', (req, res, next) => {
     })
     .catch((err) => res.send(err));
 })
+
 
 router.get('/:marketname', (req, res, next) => {
   var marketName = req.params.marketname;
